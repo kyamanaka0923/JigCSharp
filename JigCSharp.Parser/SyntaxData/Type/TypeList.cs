@@ -39,7 +39,7 @@ namespace JigCSharp.Parser
 
         public void Display(Type fromType)
         {
-            var displayTypeList = _typeList.Where(x => x != new Type("void"));
+            var displayTypeList = _typeList.Where(x => x != new Type("void")).Where(x => x != fromType);
             foreach (var type in displayTypeList)
             {
                 Console.WriteLine($"{fromType.TypeName} --> {type.TypeName}");
