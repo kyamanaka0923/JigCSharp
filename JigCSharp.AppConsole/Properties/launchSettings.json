@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JigCSharp.AppConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Repository\\booking-doing\\src\\booking.ExampleLib"
+    }
+  }
+}
