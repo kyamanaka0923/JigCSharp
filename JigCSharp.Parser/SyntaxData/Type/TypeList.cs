@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace JigCSharp.Parser
+namespace JigCSharp.Parser.SyntaxData.Type
 {
     public class TypeList
     {
-        private List<Type> _typeList;
+        private List<TypeData> _typeList;
 
-        public TypeList(IEnumerable<Type> typeList)
+        public TypeList(IEnumerable<TypeData> typeList)
         {
             // 重複する型名を削除する
-            _typeList = new List<Type>();
+            _typeList = new List<TypeData>();
             foreach (var type in typeList)
             {
                 if (!_typeList.Exists(x => x.TypeName == type.TypeName))
@@ -27,7 +26,7 @@ namespace JigCSharp.Parser
             _typeList = typeList.ToEnumerable().ToList();
         }
 
-        public IEnumerable<Type> ToEnumerable()
+        public IEnumerable<TypeData> ToEnumerable()
         {
             return _typeList;
         }
@@ -37,12 +36,12 @@ namespace JigCSharp.Parser
             return new TypeList(_typeList.Concat(typeList.ToEnumerable()));
         }
 
-        public void Display(Type fromType)
+        public void Display(TypeData fromTypeData)
         {
-            var displayTypeList = _typeList.Where(x => x != new Type("void")).Where(x => x != fromType);
+            var displayTypeList = _typeList.Where(x => x != new TypeData("void")).Where(x => x != fromTypeData);
             foreach (var type in displayTypeList)
             {
-                Console.WriteLine($"{fromType.TypeName} --> {type.TypeName}");
+                Console.WriteLine($"{fromTypeData.TypeName} --> {type.TypeName}");
             }
         }
     }

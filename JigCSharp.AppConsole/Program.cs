@@ -1,10 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Transactions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
 using JigCSharp.Parser;
 
 namespace JigCSharp.AppConsole

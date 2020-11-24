@@ -1,13 +1,15 @@
 ﻿using System;
+using JigCSharp.Parser.SyntaxData.Common;
+using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser.SyntaxData.Property
 {
     public class PropertyAndFieldData : ValueObject<PropertyAndFieldData>
     {
         public DeclarationName Name { get; }
-        public Type Type { get; }
+        public TypeData Type { get; }
 
-        public PropertyAndFieldData(DeclarationName name, Type type)
+        public PropertyAndFieldData(DeclarationName name, TypeData type)
         {
             Type = type;
             Name = name;

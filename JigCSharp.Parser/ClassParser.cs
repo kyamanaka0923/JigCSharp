@@ -2,12 +2,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using JigCSharp.Parser.SyntaxData.Class;
+using JigCSharp.Parser.SyntaxData.Common;
+using JigCSharp.Parser.SyntaxData.Method;
 using JigCSharp.Parser.SyntaxData.Namespace;
 using JigCSharp.Parser.SyntaxData.Property;
+using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser
 {
@@ -92,7 +93,7 @@ namespace JigCSharp.Parser
         {
             var comment = GetComment(node);
             var property = new PropertyAndFieldData(new DeclarationName(node.Identifier.Text, comment.Summary),
-                new Type(node.Type.ToString()));
+                new TypeData(node.Type.ToString()));
             _currentClassData.AddProperty(property);
             base.VisitPropertyDeclaration(node);
         }
@@ -104,7 +105,7 @@ namespace JigCSharp.Parser
             var comment = GetComment(node);
             foreach (var variable in variables)
             {
-                var field = new PropertyAndFieldData(new DeclarationName(variable.Identifier.Text, comment.Summary), new Type(type));
+                var field = new PropertyAndFieldData(new DeclarationName(variable.Identifier.Text, comment.Summary), new TypeData(type));
 
                 _currentClassData.AddProperty(field);
             }
@@ -129,7 +130,7 @@ namespace JigCSharp.Parser
                 }
             }
 
-            _currentMethodData = new MethodData(new DeclarationName(node.Identifier.ToString(), ""), keyword, new Type(type));
+            _currentMethodData = new MethodData(new DeclarationName(node.Identifier.ToString(), ""), keyword, new TypeData(type));
 
             base.VisitMethodDeclaration(node);
 

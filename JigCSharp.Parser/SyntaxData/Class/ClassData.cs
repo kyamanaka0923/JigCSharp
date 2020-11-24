@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using JigCSharp.Parser.SyntaxData.Common;
 using JigCSharp.Parser.SyntaxData.Method;
 using JigCSharp.Parser.SyntaxData.Property;
+using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser.SyntaxData.Class
 {
@@ -48,7 +49,7 @@ namespace JigCSharp.Parser.SyntaxData.Class
             var typeList = _propertyDataList.GetTypeList();
             typeList = typeList.Concat(_methodDataList.GetTypeList());
 
-            typeList.Display(new Type(SymbolName.Name));
+            typeList.Display(new TypeData(SymbolName.Name));
         }
 
     }

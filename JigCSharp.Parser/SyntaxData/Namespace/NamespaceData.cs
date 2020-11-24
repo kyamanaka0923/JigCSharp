@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JigCSharp.Parser.SyntaxData.Class;
+using JigCSharp.Parser.SyntaxData.Common;
 
 namespace JigCSharp.Parser.SyntaxData.Namespace
 {

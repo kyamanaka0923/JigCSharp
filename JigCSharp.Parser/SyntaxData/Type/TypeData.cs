@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace JigCSharp.Parser
+﻿namespace JigCSharp.Parser.SyntaxData.Type
 {
-    public class Type : ValueObject<Type>
+    public class TypeData : ValueObject<TypeData>
     {
         public string TypeName { get; }
 
-        public Type(string typeName)
+        public TypeData(string typeName)
         {
             if (typeName.Contains("<"))
             {
@@ -19,7 +15,7 @@ namespace JigCSharp.Parser
             TypeName = typeName;
         }
 
-        protected override bool EqualsCore(Type other)
+        protected override bool EqualsCore(TypeData other)
         {
             return TypeName == other.TypeName;
         }

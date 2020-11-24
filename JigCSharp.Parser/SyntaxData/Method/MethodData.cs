@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JigCSharp.Parser.SyntaxData.Common;
+using JigCSharp.Parser.SyntaxData.Type;
 
-namespace JigCSharp.Parser
+namespace JigCSharp.Parser.SyntaxData.Method
 {
     public class MethodData
     {
         public DeclarationName Name { get; }
 
-        public Type ReturnType { get; }
+        public TypeData ReturnTypeData { get; }
 
         private string Modifier { get; }
 
-        public MethodData(DeclarationName name, string modifier, Type returnType)
+        public MethodData(DeclarationName name, string modifier, TypeData returnTypeData)
         {
             Name = name;
             Modifier = modifier;
-            ReturnType = returnType;
+            ReturnTypeData = returnTypeData;
         }
 
         public void Display()
         {
-            Console.WriteLine($"    {ReturnType.TypeName}:{Modifier}{Name.Name}");
+            Console.WriteLine($"    {ReturnTypeData.TypeName}:{Modifier}{Name.Name}");
         }
     }
 }

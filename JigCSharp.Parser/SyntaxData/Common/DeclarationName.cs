@@ -1,4 +1,4 @@
-﻿namespace JigCSharp.Parser
+﻿namespace JigCSharp.Parser.SyntaxData.Common
 {
     public class DeclarationName : ValueObject<DeclarationName>
     {

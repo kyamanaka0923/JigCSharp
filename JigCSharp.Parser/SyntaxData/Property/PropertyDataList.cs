@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser.SyntaxData.Property
 {
@@ -30,7 +31,7 @@ namespace JigCSharp.Parser.SyntaxData.Property
             }
         }
 
-        public void DisplayTypeFrom(Type type)
+        public void DisplayTypeFrom(TypeData type)
         {
             var typeList = GetTypeList();
 
@@ -39,8 +40,7 @@ namespace JigCSharp.Parser.SyntaxData.Property
 
         public TypeList GetTypeList()
         {
-            var typeList = _propertyDataList.Select(propertyData => propertyData.Type).ToList();
-
+            var typeList = _propertyDataList.Select(propertyData => propertyData.Type);
             return new TypeList(typeList);
         }
     }

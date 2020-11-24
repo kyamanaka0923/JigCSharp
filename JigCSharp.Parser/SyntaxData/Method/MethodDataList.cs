@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser.SyntaxData.Method
 {
@@ -24,7 +25,7 @@ namespace JigCSharp.Parser.SyntaxData.Method
 
         public TypeList GetTypeList()
         {
-            return new TypeList(_methodDataList.Select(x => x.ReturnType));
+            return new TypeList(_methodDataList.Select(x => x.ReturnTypeData));
         }
 
         public void Display()
