@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace JigCSharp.Parser.SyntaxData.Type
 {
@@ -36,13 +37,17 @@ namespace JigCSharp.Parser.SyntaxData.Type
             return new TypeList(_typeList.Concat(typeList.ToEnumerable()));
         }
 
-        public void Display(TypeData fromTypeData)
+        public string Display(TypeData fromTypeData)
         {
             var displayTypeList = _typeList.Where(x => x != new TypeData("void")).Where(x => x != fromTypeData);
+
+            var returnStringBuilder = new StringBuilder();
             foreach (var type in displayTypeList)
             {
-                Console.WriteLine($"{fromTypeData.TypeName} --> {type.TypeName}");
+                returnStringBuilder.AppendLine($"{fromTypeData.TypeName} --> {type.TypeName}");
             }
+
+            return returnStringBuilder.ToString();
         }
     }
 

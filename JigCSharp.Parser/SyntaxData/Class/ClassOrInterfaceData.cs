@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using JigCSharp.Parser.SyntaxData.Common;
 using JigCSharp.Parser.SyntaxData.Method;
 using JigCSharp.Parser.SyntaxData.Property;
@@ -7,7 +8,7 @@ using JigCSharp.Parser.SyntaxData.Type;
 namespace JigCSharp.Parser.SyntaxData.Class
 {
 
-    public class ClassData
+    public class ClassOrInterfaceData
     {
         public DeclarationName SymbolName { get; }
 
@@ -15,11 +16,14 @@ namespace JigCSharp.Parser.SyntaxData.Class
 
         private PropertyDataList _propertyDataList;
 
-        public ClassData(DeclarationName symbolName)
+        private ClassOrInterfaceType Type { get; }
+
+        public ClassOrInterfaceData(DeclarationName symbolName, ClassOrInterfaceType type)
         {
             SymbolName = symbolName;
             _methodDataList = new MethodDataList();
             _propertyDataList = new PropertyDataList();
+            Type = type;
         }
 
         public void AddMethod(MethodData methodData)
@@ -32,24 +36,33 @@ namespace JigCSharp.Parser.SyntaxData.Class
             _propertyDataList = _propertyDataList.Add(propertyAndField);
         }
 
-        public void Display()
+        public string Display()
         {
-            Console.WriteLine($"  class \"{SymbolName.DisplayName}\" as {SymbolName.Name}{{");
+            var returnString = new StringBuilder();
+
+            var type = "class";
+            if (Type == ClassOrInterfaceType.Interface)
+            {
+                type = "interface";
+            }
+
+            returnString.AppendLine($"  {type} \"{SymbolName.DisplayName}\" as {SymbolName.Name}{{");
+            returnString.AppendLine("  }");
 
             //_methodDataList.Display();
 
             //_propertyDataList.Display();
 
-            Console.WriteLine("  }");
+            return returnString.ToString();
 
         }
 
-        public void DisplayAccess()
+        public string DisplayAccess()
         {
             var typeList = _propertyDataList.GetTypeList();
             typeList = typeList.Concat(_methodDataList.GetTypeList());
 
-            typeList.Display(new TypeData(SymbolName.Name));
+            return typeList.Display(new TypeData(SymbolName.Name));
         }
 
     }

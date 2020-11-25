@@ -1,3 +1,4 @@
+using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,7 +23,7 @@ namespace JigCSharp.Parser
         private NamespaceDataList _namespaceDataList;
 
         private NamespaceData _currentNamespaceData;
-        private ClassData _currentClassData;
+        private ClassOrInterfaceData _currentClassOrInterfaceData;
         private MethodData _currentMethodData;
 
         public ClassParser()
@@ -30,7 +31,7 @@ namespace JigCSharp.Parser
             _namespaceDataList = new NamespaceDataList();
         }
 
-        public void Generate(Stream stream)
+        public NamespaceDataList Generate(Stream stream)
         {
             var tree = CSharpSyntaxTree.ParseText(SourceText.From(stream));
             var compilation = CSharpCompilation.Create("tempcompilation", syntaxTrees: new[] {tree});
@@ -39,7 +40,7 @@ namespace JigCSharp.Parser
 
             Visit(root);
 
-            _namespaceDataList.Display();
+            return _namespaceDataList;
         }
 
         public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
@@ -60,11 +61,24 @@ namespace JigCSharp.Parser
             var comment = GetComment(node);
 
 
-            _currentClassData = new ClassData(new DeclarationName(node.Identifier.Text, comment.Summary));
+            _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Class);
 
             base.VisitClassDeclaration(node);
 
-            _currentNamespaceData.AddClassData(_currentClassData);
+            _currentNamespaceData.AddClassData(_currentClassOrInterfaceData);
+        }
+
+
+        public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+        {
+            var comment = GetComment(node);
+
+            _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Interface);
+
+            base.VisitInterfaceDeclaration(node);
+
+            _currentNamespaceData.AddClassData(_currentClassOrInterfaceData);
+
         }
 
         private XmlDocument GetComment(SyntaxNode node)
@@ -94,7 +108,7 @@ namespace JigCSharp.Parser
             var comment = GetComment(node);
             var property = new PropertyAndFieldData(new DeclarationName(node.Identifier.Text, comment.Summary),
                 new TypeData(node.Type.ToString()));
-            _currentClassData.AddProperty(property);
+            _currentClassOrInterfaceData.AddProperty(property);
             base.VisitPropertyDeclaration(node);
         }
 
@@ -107,7 +121,7 @@ namespace JigCSharp.Parser
             {
                 var field = new PropertyAndFieldData(new DeclarationName(variable.Identifier.Text, comment.Summary), new TypeData(type));
 
-                _currentClassData.AddProperty(field);
+                _currentClassOrInterfaceData.AddProperty(field);
             }
             base.VisitFieldDeclaration(node);
         }
@@ -134,7 +148,7 @@ namespace JigCSharp.Parser
 
             base.VisitMethodDeclaration(node);
 
-            _currentClassData.AddMethod(_currentMethodData);
+            _currentClassOrInterfaceData.AddMethod(_currentMethodData);
             
         }
     }

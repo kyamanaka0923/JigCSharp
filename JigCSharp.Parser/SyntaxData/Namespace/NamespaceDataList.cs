@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace JigCSharp.Parser.SyntaxData.Namespace
 {
@@ -22,12 +23,29 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
             return new NamespaceDataList(_namespaceDataList.Concat(new List<NamespaceData>() {namespaceData}));;
         }
 
-        public void Display()
+        public NamespaceDataList Concat(NamespaceDataList namespaceDataList)
         {
+            return new NamespaceDataList(_namespaceDataList.Concat(namespaceDataList.ToEnumerable()));
+        }
+
+        public IEnumerable<NamespaceData> ToEnumerable()
+        {
+            return _namespaceDataList.AsEnumerable();
+        }
+
+        public string Display()
+        {
+            var returnStringBuilder = new StringBuilder();
             foreach (var namespaceData in _namespaceDataList)
             {
-                namespaceData.Display();
+                returnStringBuilder.AppendLine(namespaceData.DisplayPackage());
             }
+
+            foreach (var namespaceData in _namespaceDataList)
+            {
+                returnStringBuilder.AppendLine(namespaceData.DisplayAssociation());
+            }
+            return returnStringBuilder.ToString();
         }
     }
 
