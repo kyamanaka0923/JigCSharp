@@ -37,7 +37,9 @@ namespace JigCSharp.AppConsole
                 allNamespaceDataList = allNamespaceDataList.Concat(namespaceDataList);
             }
 
+            Console.WriteLine("```plantuml");
             Console.WriteLine(allNamespaceDataList.Display());
+            Console.WriteLine("```");
         }
     }
 }

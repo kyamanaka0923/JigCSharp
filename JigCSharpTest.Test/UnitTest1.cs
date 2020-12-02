@@ -1,3 +1,4 @@
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using JigCSharp.Parser;
@@ -14,7 +15,10 @@ namespace JigCSharpTest.Test
             using var stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read);
             var classParser = new ClassParser();
 
-            classParser.Generate(stream);
+            var namespaceDataList = classParser.Generate(stream);
+
+                var result = namespaceDataList.Display();
+            Console.WriteLine(result);
         }
     }
 }
