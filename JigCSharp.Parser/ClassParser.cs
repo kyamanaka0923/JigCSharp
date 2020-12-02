@@ -1,9 +1,9 @@
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.IO;
+using System.Reflection;
 using JigCSharp.Parser.SyntaxData.Class;
 using JigCSharp.Parser.SyntaxData.Common;
 using JigCSharp.Parser.SyntaxData.Method;
@@ -34,8 +34,9 @@ namespace JigCSharp.Parser
         public NamespaceDataList Generate(Stream stream)
         {
             var tree = CSharpSyntaxTree.ParseText(SourceText.From(stream));
-            var compilation = CSharpCompilation.Create("tempcompilation", syntaxTrees: new[] {tree});
-            _semanticModel = compilation.GetSemanticModel(compilation.SyntaxTrees[0], true);
+            var mscorlib = MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location);
+            var compilation = CSharpCompilation.Create("tempcompilation", syntaxTrees: new[] {tree}, new []{mscorlib});
+            _semanticModel = compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
 
             Visit(root);
