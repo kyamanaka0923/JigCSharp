@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using JigCSharp.Parser.SyntaxData.Common;
 using JigCSharp.Parser.SyntaxData.Method;
@@ -15,15 +16,35 @@ namespace JigCSharp.Parser.SyntaxData.Class
         private MethodDataList _methodDataList;
 
         private PropertyDataList _propertyDataList;
-
         private ClassOrInterfaceType Type { get; }
+        
+        private readonly BaseTypeList _baseTypeList;
 
-        public ClassOrInterfaceData(DeclarationName symbolName, ClassOrInterfaceType type)
+        public ValueKind ValueKind
+        {
+            get
+            {
+                if (_baseTypeList.Exist("Enumeration"))
+                {
+                    return ValueKind.Enumeration;
+                }
+
+                if (_baseTypeList.Exist("ValueObject"))
+                {
+                    return ValueKind.ValueObject;
+                }
+
+                return ValueKind.None;
+            }
+        }
+
+        public ClassOrInterfaceData(DeclarationName symbolName, ClassOrInterfaceType type, BaseTypeList baseTypeList)
         {
             SymbolName = symbolName;
             _methodDataList = new MethodDataList();
             _propertyDataList = new PropertyDataList();
             Type = type;
+            _baseTypeList = baseTypeList;
         }
 
         public void AddMethod(MethodData methodData)
@@ -36,7 +57,7 @@ namespace JigCSharp.Parser.SyntaxData.Class
             _propertyDataList = _propertyDataList.Add(propertyAndField);
         }
 
-        public string Display()
+        public string DisplayPlantuml()
         {
             var returnString = new StringBuilder();
 
@@ -49,20 +70,40 @@ namespace JigCSharp.Parser.SyntaxData.Class
             returnString.AppendLine($"  {type} \"{SymbolName.DisplayName}\" as {SymbolName.Name}{{");
             returnString.AppendLine("  }");
 
-            //_methodDataList.Display();
+            //_methodDataList.DisplayPlantuml();
 
-            //_propertyDataList.Display();
+            //_propertyDataList.DisplayPlantuml();
 
             return returnString.ToString();
-
         }
 
-        public string DisplayAccess()
+        public ClassDto ToDto()
+        {
+            return new ClassDto(this.SymbolName.Name, this.SymbolName.DisplayName, "dummyModifier",
+                _methodDataList.ToDtos(), ValueKind.Name);
+        }
+
+        public string DisplayAccessPlantuml()
         {
             var typeList = _propertyDataList.GetTypeList();
             typeList = typeList.Concat(_methodDataList.GetTypeList());
 
-            return typeList.Display(new TypeData(SymbolName.Name));
+            return typeList.DisplayPlantuml(new TypeData(SymbolName.Name));
+        }
+
+        public string DisplayList()
+        {
+            var returnStringBuilder = new StringBuilder();
+            returnStringBuilder.AppendLine($"## クラス名 : {SymbolName.Name}");
+            returnStringBuilder.AppendLine($"### 別名 : {SymbolName.DisplayName}");
+            returnStringBuilder.AppendLine(_methodDataList.DisplayList());
+
+            return returnStringBuilder.ToString();
+        }
+
+        public bool IsClass()
+        {
+            return Type == ClassOrInterfaceType.Class;
         }
 
     }

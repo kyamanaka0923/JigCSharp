@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using JigCSharp.Parser.SyntaxData.Class;
 using JigCSharp.Parser.SyntaxData.Common;
@@ -16,7 +19,7 @@ namespace JigCSharp.Parser
     /// <summary>
     /// パーサー
     /// </summary>
-    public class ClassParser : CSharpSyntaxWalker
+    public class CSharpCodeParser : CSharpSyntaxWalker
     {
         private SemanticModel _semanticModel;
 
@@ -26,7 +29,7 @@ namespace JigCSharp.Parser
         private ClassOrInterfaceData _currentClassOrInterfaceData;
         private MethodData _currentMethodData;
 
-        public ClassParser()
+        public CSharpCodeParser()
         {
             _namespaceDataList = new NamespaceDataList();
         }
@@ -50,7 +53,7 @@ namespace JigCSharp.Parser
 
             base.VisitNamespaceDeclaration(node);
 
-            _namespaceDataList = _namespaceDataList.Add(_currentNamespaceData);
+            _namespaceDataList.Add(_currentNamespaceData);
         }
 
         /// <summary>
@@ -61,20 +64,58 @@ namespace JigCSharp.Parser
         {
             var comment = GetComment(node);
 
+            var attributes = GetClassAttribute(node);
 
-            _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Class);
+            var baseClasses = GetBaseClass(node);
+
+            _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary),
+                ClassOrInterfaceType.Class, baseClasses);
 
             base.VisitClassDeclaration(node);
 
             _currentNamespaceData.AddClassData(_currentClassOrInterfaceData);
         }
 
+        /// <summary>
+        /// クラス属性情報を取得
+        /// </summary>
+        /// <param name="node">クラスノード</param>
+        /// <returns></returns>
+        private IEnumerable<string> GetClassAttribute(ClassDeclarationSyntax node)
+        {
+            var attributes = node.AttributeLists.SelectMany(x => x.Attributes);
+            var returnAttributes = new List<string>();
+            foreach (var attribute in attributes)
+            {
+                returnAttributes.Add(_semanticModel.GetTypeInfo(attribute).Type.ToDisplayString());
+            }
+
+            return returnAttributes;
+        }
+
+        private BaseTypeList GetBaseClass(ClassDeclarationSyntax node)
+        {
+            var baseTypes = new List<BaseType>();
+            if (node.BaseList == null)
+            {
+                return new BaseTypeList(baseTypes);
+            }
+            
+            foreach (var baseTypeSyntax in node.BaseList.Types)
+            {
+                baseTypes.Add(new BaseType(baseTypeSyntax.Type.Parent.ToString()));
+            }
+
+            return new BaseTypeList(baseTypes);
+        }
 
         public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
         {
             var comment = GetComment(node);
 
-            _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Interface);
+            _currentClassOrInterfaceData = new ClassOrInterfaceData(
+                new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Interface,
+                BaseTypeList.Empty());
 
             base.VisitInterfaceDeclaration(node);
 

@@ -37,7 +37,7 @@ namespace JigCSharp.Parser.SyntaxData.Type
             return new TypeList(_typeList.Concat(typeList.ToEnumerable()));
         }
 
-        public string Display(TypeData fromTypeData)
+        public string DisplayPlantuml(TypeData fromTypeData)
         {
             var displayTypeList = _typeList.Where(x => x != new TypeData("void")).Where(x => x != fromTypeData);
 

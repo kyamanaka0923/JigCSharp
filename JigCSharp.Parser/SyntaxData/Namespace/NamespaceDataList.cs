@@ -18,14 +18,25 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
             _namespaceDataList = namespaceDatas.ToList();
         }
 
-        public NamespaceDataList Add(NamespaceData namespaceData)
+        public void Add(NamespaceData namespaceData)
         {
-            return new NamespaceDataList(_namespaceDataList.Concat(new List<NamespaceData>() {namespaceData}));;
+            var selectedNamespaceData = _namespaceDataList.FirstOrDefault(x => x.Name == namespaceData.Name);
+            if (selectedNamespaceData != null)
+            {
+                selectedNamespaceData.AddClassData(namespaceData.GetClassOrInterfaceDataCollection());
+                return;
+            }
+            _namespaceDataList = _namespaceDataList.Concat(new List<NamespaceData>() {namespaceData}).ToList();
         }
 
         public NamespaceDataList Concat(NamespaceDataList namespaceDataList)
         {
-            return new NamespaceDataList(_namespaceDataList.Concat(namespaceDataList.ToEnumerable()));
+            foreach (var namespaceData in namespaceDataList.ToEnumerable())
+            {
+                Add(namespaceData);
+            }
+
+            return new NamespaceDataList(_namespaceDataList);
         }
 
         public IEnumerable<NamespaceData> ToEnumerable()
@@ -33,12 +44,12 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
             return _namespaceDataList.AsEnumerable();
         }
 
-        public string Display()
+        public string StringToPlantuml()
         {
             var returnStringBuilder = new StringBuilder();
             foreach (var namespaceData in _namespaceDataList)
             {
-                returnStringBuilder.AppendLine(namespaceData.DisplayPackage());
+                returnStringBuilder.AppendLine(namespaceData.StringToPlantuml());
             }
 
             foreach (var namespaceData in _namespaceDataList)
@@ -46,6 +57,22 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
                 returnStringBuilder.AppendLine(namespaceData.DisplayAssociation());
             }
             return returnStringBuilder.ToString();
+        }
+
+        public string DisplayList()
+        {
+            var returnStringBuilder = new StringBuilder();
+            foreach (var namespaceData in _namespaceDataList)
+            {
+                returnStringBuilder.AppendLine(namespaceData.DisplayList());
+            }
+
+            return returnStringBuilder.ToString();
+        }
+
+        public IEnumerable<NamespaceDto> ToDto()
+        {
+            return _namespaceDataList.Select(x => x.ToDto());
         }
     }
 

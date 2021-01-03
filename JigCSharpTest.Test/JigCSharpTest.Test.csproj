@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JigCSharp.AppConsole\JigCSharp.AppConsole.csproj" />
     <ProjectReference Include="..\JigCSharp.Parser\JigCSharp.Parser.csproj" />
   </ItemGroup>
 

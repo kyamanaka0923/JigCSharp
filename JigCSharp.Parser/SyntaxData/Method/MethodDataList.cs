@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using JigCSharp.Parser.SyntaxData.Type;
 
 namespace JigCSharp.Parser.SyntaxData.Method
@@ -18,6 +19,15 @@ namespace JigCSharp.Parser.SyntaxData.Method
             _methodDataList = methodDataList.ToList();
         }
 
+        /// <summary>
+        /// MethodのDTOリストを取得する
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MethodDto> ToDtos()
+        {
+            return _methodDataList.Select(x => x.ToDto());
+        }
+
         public MethodDataList Add(MethodData methodData)
         {
             return new MethodDataList(_methodDataList.Concat(new List<MethodData>() {methodData}));
@@ -28,12 +38,23 @@ namespace JigCSharp.Parser.SyntaxData.Method
             return new TypeList(_methodDataList.Select(x => x.ReturnTypeData));
         }
 
-        public void Display()
+        public void DisplayPlantml()
         {
             foreach (var method in _methodDataList)
             {
-                method.Display();
+                method.DisplayPlantuml();
             }
+        }
+
+        public string DisplayList()
+        {
+            var returnStringBuilder = new StringBuilder();
+            foreach (var method in _methodDataList.Where(x => x.Modifier == "+"))
+            {
+                returnStringBuilder.AppendLine(method.DisplayList());
+            }
+
+            return returnStringBuilder.ToString();
         }
     }
 }

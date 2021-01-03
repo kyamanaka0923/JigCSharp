@@ -35,7 +35,7 @@ namespace JigCSharp.Parser.SyntaxData.Property
         {
             var typeList = GetTypeList();
 
-            typeList.Display(type);
+            typeList.DisplayPlantuml(type);
         }
 
         public TypeList GetTypeList()

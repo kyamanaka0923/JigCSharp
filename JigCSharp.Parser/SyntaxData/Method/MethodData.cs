@@ -10,7 +10,7 @@ namespace JigCSharp.Parser.SyntaxData.Method
 
         public TypeData ReturnTypeData { get; }
 
-        private string Modifier { get; }
+        public string Modifier { get; }
 
         public MethodData(DeclarationName name, string modifier, TypeData returnTypeData)
         {
@@ -19,9 +19,23 @@ namespace JigCSharp.Parser.SyntaxData.Method
             ReturnTypeData = returnTypeData;
         }
 
-        public void Display()
+        public void DisplayPlantuml()
         {
             Console.WriteLine($"    {ReturnTypeData.TypeName}:{Modifier}{Name.Name}");
+        }
+
+        public string DisplayList()
+        {
+            return $"### メソッド : {Name.Name} ({Name.DisplayName})\n#### 戻り値 : {ReturnTypeData.TypeName}";
+        }
+
+        /// <summary>
+        /// DTO型へ変換
+        /// </summary>
+        /// <returns>MethodのDTO型</returns>
+        public MethodDto ToDto()
+        {
+            return new MethodDto(Name.Name, Name.DisplayName, Modifier, ReturnTypeData.TypeName);
         }
     }
 }
