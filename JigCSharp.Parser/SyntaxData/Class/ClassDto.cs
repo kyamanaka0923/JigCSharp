@@ -14,14 +14,17 @@ namespace JigCSharp.Parser.SyntaxData.Class
         public IEnumerable<MethodDto> Methods { get; }
         
         public string ValueKind { get; }
+        
+        public string ClassAttributeKind { get; }
 
-        public ClassDto(string name, string displayName, string modifier, IEnumerable<MethodDto> methodDtos, string valueKind)
+        public ClassDto(string name, string displayName, string modifier, IEnumerable<MethodDto> methodDtos, string valueKind, string classAttributeKind)
         {
             Name = name;
             DisplayName = displayName;
             Modifier = modifier;
             Methods = methodDtos;
             ValueKind = valueKind;
+            ClassAttributeKind = classAttributeKind;
         }
     }
 }

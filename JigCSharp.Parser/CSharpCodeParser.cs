@@ -64,12 +64,12 @@ namespace JigCSharp.Parser
         {
             var comment = GetComment(node);
 
-            var attributes = GetClassAttribute(node);
+            var classAttributeKind = GetClassBelongedLayerKind(node);
 
             var baseClasses = GetBaseClass(node);
 
             _currentClassOrInterfaceData = new ClassOrInterfaceData(new DeclarationName(node.Identifier.Text, comment.Summary),
-                ClassOrInterfaceType.Class, baseClasses);
+                ClassOrInterfaceType.Class, baseClasses, classAttributeKind);
 
             base.VisitClassDeclaration(node);
 
@@ -77,11 +77,11 @@ namespace JigCSharp.Parser
         }
 
         /// <summary>
-        /// クラス属性情報を取得
+        /// クラス属性からどの層に対応しているか取得
         /// </summary>
         /// <param name="node">クラスノード</param>
         /// <returns></returns>
-        private IEnumerable<string> GetClassAttribute(ClassDeclarationSyntax node)
+        private ClassBelongedLayerKind GetClassBelongedLayerKind(TypeDeclarationSyntax node)
         {
             var attributes = node.AttributeLists.SelectMany(x => x.Attributes);
             var returnAttributes = new List<string>();
@@ -90,7 +90,22 @@ namespace JigCSharp.Parser
                 returnAttributes.Add(_semanticModel.GetTypeInfo(attribute).Type.ToDisplayString());
             }
 
-            return returnAttributes;
+            if (returnAttributes.Exists(x => x == "CONTROLLER"))
+            {
+                return ClassBelongedLayerKind.CONTROLLER;
+            }
+
+            if (returnAttributes.Exists(x => x == "SERVICE"))
+            {
+                return ClassBelongedLayerKind.SERVICE;
+            }
+
+            if (returnAttributes.Exists(x => x == "REPOSITORY"))
+            {
+                return ClassBelongedLayerKind.REPOSITORY;
+            }
+            
+            return ClassBelongedLayerKind.NONE;
         }
 
         private BaseTypeList GetBaseClass(ClassDeclarationSyntax node)
@@ -113,9 +128,11 @@ namespace JigCSharp.Parser
         {
             var comment = GetComment(node);
 
+            var classBelongedLayerKind = GetClassBelongedLayerKind(node);
+
             _currentClassOrInterfaceData = new ClassOrInterfaceData(
                 new DeclarationName(node.Identifier.Text, comment.Summary), ClassOrInterfaceType.Interface,
-                BaseTypeList.Empty());
+                BaseTypeList.Empty(), classBelongedLayerKind);
 
             base.VisitInterfaceDeclaration(node);
 

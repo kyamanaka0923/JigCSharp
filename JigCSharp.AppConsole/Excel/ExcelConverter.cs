@@ -64,6 +64,7 @@ namespace JigCSharp.AppConsole.Excel
             worksheet.Cell(row, 2).SetValue("クラス名");
             worksheet.Cell(row, 3).SetValue("クラス別名");
             worksheet.Cell(row, 4).SetValue("値の種類");
+            worksheet.Cell(row, 5).SetValue("レイヤ");
 
             row++;
 
@@ -75,11 +76,12 @@ namespace JigCSharp.AppConsole.Excel
                     worksheet.Cell(row, 2).SetValue(classDto.Name);
                     worksheet.Cell(row, 3).SetValue(classDto.DisplayName);
                     worksheet.Cell(row, 4).SetValue(classDto.ValueKind);
+                    worksheet.Cell(row, 5).SetValue(classDto.ClassAttributeKind);
                     row++;
                 }
             }
-            
-            AdjustToContents(worksheet, new List<int>(){1,2,3,4});
+
+            worksheet.ColumnsUsed().AdjustToContents();
         }
 
         private static void AdjustToContents(IXLWorksheet worksheet, IEnumerable<int> toAdjustColumns)

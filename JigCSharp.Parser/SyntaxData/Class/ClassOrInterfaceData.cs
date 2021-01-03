@@ -18,6 +18,8 @@ namespace JigCSharp.Parser.SyntaxData.Class
         private PropertyDataList _propertyDataList;
         private ClassOrInterfaceType Type { get; }
         
+        private ClassBelongedLayerKind ClassBelongedLayerKind { get; }
+        
         private readonly BaseTypeList _baseTypeList;
 
         public ValueKind ValueKind
@@ -38,13 +40,14 @@ namespace JigCSharp.Parser.SyntaxData.Class
             }
         }
 
-        public ClassOrInterfaceData(DeclarationName symbolName, ClassOrInterfaceType type, BaseTypeList baseTypeList)
+        public ClassOrInterfaceData(DeclarationName symbolName, ClassOrInterfaceType type, BaseTypeList baseTypeList, ClassBelongedLayerKind classBelongedLayerKind)
         {
             SymbolName = symbolName;
             _methodDataList = new MethodDataList();
             _propertyDataList = new PropertyDataList();
             Type = type;
             _baseTypeList = baseTypeList;
+            ClassBelongedLayerKind = classBelongedLayerKind;
         }
 
         public void AddMethod(MethodData methodData)
@@ -80,7 +83,7 @@ namespace JigCSharp.Parser.SyntaxData.Class
         public ClassDto ToDto()
         {
             return new ClassDto(this.SymbolName.Name, this.SymbolName.DisplayName, "dummyModifier",
-                _methodDataList.ToDtos(), ValueKind.Name);
+                _methodDataList.ToDtos(), ValueKind.Name, ClassBelongedLayerKind.Name);
         }
 
         public string DisplayAccessPlantuml()
