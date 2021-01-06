@@ -39,6 +39,22 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
             return new NamespaceDataList(_namespaceDataList);
         }
 
+        public NamespaceDataList Exclude(IEnumerable<string> excludeNameList)
+        {
+            if (!_namespaceDataList.Any())
+            {
+                return new NamespaceDataList(_namespaceDataList);
+            }
+
+            if (!excludeNameList.Any())
+            {
+                return new NamespaceDataList(_namespaceDataList);
+            }
+                
+            return new NamespaceDataList(_namespaceDataList.Where(x =>
+                !excludeNameList.Any(y => x.Name.Name.StartsWith(y))));
+        }
+
         public IEnumerable<NamespaceData> ToEnumerable()
         {
             return _namespaceDataList.AsEnumerable();

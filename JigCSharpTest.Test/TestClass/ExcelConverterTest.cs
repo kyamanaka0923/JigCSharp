@@ -25,8 +25,7 @@ namespace JigCSharpTest.Test
 
                 allNamespaceDataList = allNamespaceDataList.Concat(namespaceDataList);
             }
-            ExcelConverter.Convert(allNamespaceDataList, @"C:\Repository\JigCSharp\work\output.xlsx",
-                @"C:\Repository\JigCSharp\work\template.xlsx");
+            ExcelConverter.Convert(allNamespaceDataList, @"C:\Repository\JigCSharp\work\output.xlsx");
         }
         
     }

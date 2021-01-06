@@ -22,4 +22,14 @@
     <Folder Include="TestClass\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestData\configTest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestClass\ProgramTest.cs" />
+  </ItemGroup>
+
 </Project>

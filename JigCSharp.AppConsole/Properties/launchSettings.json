@@ -2,7 +2,7 @@
   "profiles": {
     "JigCSharp.AppConsole": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Repository\\DDDSample"
+      "commandLineArgs": "C:\\Repository\\DDDSample list"
     }
   }
 }

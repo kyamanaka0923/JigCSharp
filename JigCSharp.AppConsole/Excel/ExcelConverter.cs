@@ -14,9 +14,10 @@ namespace JigCSharp.AppConsole.Excel
 {
     public class ExcelConverter
     {
-        public static void Convert(NamespaceDataList namespaceDataList, string outputFilename, string templateFilename)
+        public static void Convert(NamespaceDataList namespaceDataList, string outputFilename)
         {
             var namespaceDto = namespaceDataList.ToDto();
+            
 
             using (var workbook = new XLWorkbook())
             {
@@ -27,7 +28,7 @@ namespace JigCSharp.AppConsole.Excel
                 workbook.SaveAs(outputFilename);
             }
         }
-
+        
         /// <summary>
         /// パッケージシートを出力
         /// </summary>

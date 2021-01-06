@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using JigCSharp.AppConsole.Config;
 using JigCSharp.AppConsole.Excel;
 using JigCSharp.Parser;
 using JigCSharp.Parser.SyntaxData.Namespace;
@@ -11,27 +12,32 @@ namespace JigCSharp.AppConsole
         static void Main(string[] args)
         {
 
-            if (args.Length != 2)
+            if (args.Length != 3)
             {
-                Console.WriteLine("Usage: JigCSharp.exe [Directory(FullPath)] [option(plantuml/list)]");
+                Console.WriteLine("Usage: JigCSharp.exe [Directory(FullPath)] [OutputDirectory(FullPath)] [ConfigFile]");
                 return;
             }
 
             var path = args[0];
-            var option = args[1];
+            var outputDir = args[1];
+            var configFile = args[2];
 
             if (!Directory.Exists(path))
             {
                 Console.WriteLine($"指定されたディレクトリが存在しません: {path}");
                 return;
             }
-
-            if (!((option == "plantuml") || (option == "list")))
+            
+            if (!Directory.Exists(outputDir))
             {
-                Console.WriteLine($"オプションが指定されていません: plantuml/list");
+                Console.WriteLine($"指定されたディレクトリが存在しません: {outputDir}");
                 return;
             }
 
+            if (!File.Exists(configFile))
+            {
+                Console.WriteLine($"指定されたコンフィグファイルが存在ません: {configFile}");
+            }
 
             var files = Directory.EnumerateFiles(path, "*.cs", SearchOption.AllDirectories);
 
@@ -46,24 +52,19 @@ namespace JigCSharp.AppConsole
                 allNamespaceDataList = allNamespaceDataList.Concat(namespaceDataList);
             }
 
-            switch (option)
-            {
-                case "plantuml":
-                    Console.WriteLine("```plantuml");
-                    Console.WriteLine(allNamespaceDataList.StringToPlantuml());
-                    Console.WriteLine("```");
-                    break;
+            var plantumlFilePath = outputDir + @"\plantuml.md";
+            var excelFilePath = outputDir + @"\jigAll.xlsx";
 
-                case "list":
-                    Console.WriteLine(allNamespaceDataList.DisplayList());
-                    break;
-                
-                case "excel":
-                    Console.WriteLine("Excel出力");
-                    ExcelConverter.Convert(allNamespaceDataList, @"C:\Repository\JigCSharp\work\output.xlsx",
-                        @"C:\Repository\JigCSharp\work\template.xlsx");
-                    break;
+            using (var plantumlFileStream = new StreamWriter(plantumlFilePath))
+            {
+                plantumlFileStream.WriteLine(allNamespaceDataList.StringToPlantuml());
             }
+
+            var excludeNamespaces = Configuration.GetExcludeNamespaces(configFile);
+
+            var targetNamespaceDataList = allNamespaceDataList.Exclude(excludeNamespaces);
+
+            ExcelConverter.Convert(targetNamespaceDataList, excelFilePath);
         }
     }
 }
