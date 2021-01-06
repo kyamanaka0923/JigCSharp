@@ -36,6 +36,11 @@ namespace JigCSharp.Parser.SyntaxData.Class
                     return ValueKind.ValueObject;
                 }
 
+                if (_baseTypeList.Exist("Exception"))
+                {
+                    return ValueKind.Exception;
+                }
+
                 return ValueKind.None;
             }
         }
