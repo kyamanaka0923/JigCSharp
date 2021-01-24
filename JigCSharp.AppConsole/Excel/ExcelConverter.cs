@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ClosedXML;
 using ClosedXML.Excel;
 using ClosedXML.Report;
 using DocumentFormat.OpenXml.Wordprocessing;
 using JigCSharp.Parser.SyntaxData.Class;
+using JigCSharp.Parser.SyntaxData.Method;
 using JigCSharp.Parser.SyntaxData.Namespace;
 using MoreLinq;
 
@@ -71,6 +73,7 @@ namespace JigCSharp.AppConsole.Excel
             worksheet.Cell(row, 3).SetValue("クラス別名");
             worksheet.Cell(row, 4).SetValue("値の種類");
             worksheet.Cell(row, 5).SetValue("レイヤ");
+            worksheet.Cell(row, 6).SetValue("メソッド");
 
             row++;
 
@@ -83,11 +86,21 @@ namespace JigCSharp.AppConsole.Excel
                     worksheet.Cell(row, 3).SetValue(classDto.DisplayName);
                     worksheet.Cell(row, 4).SetValue(classDto.ValueKind);
                     worksheet.Cell(row, 5).SetValue(classDto.ClassAttributeKind);
+                    worksheet.Cell(row, 6).SetValue(DisplayMethods(classDto.Methods));
+                    
                     row++;
                 }
             }
 
             worksheet.ColumnsUsed().AdjustToContents();
+        }
+
+        private static string DisplayMethods(IEnumerable<MethodDto> methods)
+        {
+            var methodString = new StringBuilder();
+            methodString.AppendJoin(',', methods.Select(x => x.Name));
+
+            return methodString.ToString();
         }
 
         /// <summary>
