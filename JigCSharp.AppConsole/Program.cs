@@ -11,16 +11,22 @@ namespace JigCSharp.AppConsole
     {
         static void Main(string[] args)
         {
-
-            if (args.Length != 3)
+            
+            if (args.Length != 1)
             {
-                Console.WriteLine("Usage: JigCSharp.exe [Directory(FullPath)] [OutputDirectory(FullPath)] [ConfigFile]");
+                Console.WriteLine("Usage: JigCSharp.exe [ConfigFile]");
                 return;
             }
-
-            var path = args[0];
-            var outputDir = args[1];
-            var configFile = args[2];
+            
+            var configFile = args[0];
+            
+            if (!File.Exists(configFile))
+            {
+                Console.WriteLine($"指定されたコンフィグファイルが存在ません: {configFile}");
+            }
+            
+            var path = Configuration.GetInputPath(configFile);
+            var outputDir = Configuration.GetOutputPath(configFile);
 
             if (!Directory.Exists(path))
             {
@@ -34,13 +40,9 @@ namespace JigCSharp.AppConsole
                 return;
             }
 
-            if (!File.Exists(configFile))
-            {
-                Console.WriteLine($"指定されたコンフィグファイルが存在ません: {configFile}");
-            }
-
             var files = Directory.EnumerateFiles(path, "*.cs", SearchOption.AllDirectories);
 
+            // 全ネームスページ情報を取得
             var allNamespaceDataList = new NamespaceDataList();
             foreach (var file in files)
             {
@@ -55,15 +57,17 @@ namespace JigCSharp.AppConsole
             var plantumlFilePath = outputDir + @"\plantuml.md";
             var excelFilePath = outputDir + @"\jigAll.xlsx";
 
+            // PlantUML形式の結果出力
             using (var plantumlFileStream = new StreamWriter(plantumlFilePath))
             {
                 plantumlFileStream.WriteLine(allNamespaceDataList.StringToPlantuml());
             }
 
+            // ネームスペース除外リストから除外
             var excludeNamespaces = Configuration.GetExcludeNamespaces(configFile);
-
             var targetNamespaceDataList = allNamespaceDataList.Exclude(excludeNamespaces);
 
+            // Excel形式の結果出力
             ExcelConverter.Convert(targetNamespaceDataList, excelFilePath);
         }
     }

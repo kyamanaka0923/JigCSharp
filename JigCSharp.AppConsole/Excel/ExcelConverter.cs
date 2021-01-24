@@ -56,6 +56,11 @@ namespace JigCSharp.AppConsole.Excel
             worksheet.ColumnsUsed().AdjustToContents();
         }
 
+        /// <summary>
+        /// ALLシートを作成する
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="namespaceDtos"></param>
         private static void WriteAllSheet(XLWorkbook workbook, IEnumerable<NamespaceDto> namespaceDtos)
         {
             var worksheet = workbook.AddWorksheet("ALL");
@@ -85,6 +90,11 @@ namespace JigCSharp.AppConsole.Excel
             worksheet.ColumnsUsed().AdjustToContents();
         }
 
+        /// <summary>
+        /// Excel列幅を調整する
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="toAdjustColumns"></param>
         private static void AdjustToContents(IXLWorksheet worksheet, IEnumerable<int> toAdjustColumns)
         {
             foreach (var column in toAdjustColumns)

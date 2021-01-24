@@ -22,7 +22,7 @@ namespace JigCSharp.Parser
     public class CSharpCodeParser : CSharpSyntaxWalker
     {
         private SemanticModel _semanticModel;
-
+        
         private NamespaceDataList _namespaceDataList;
 
         private NamespaceData _currentNamespaceData;

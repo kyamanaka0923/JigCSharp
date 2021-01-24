@@ -8,13 +8,32 @@ namespace JigCSharp.AppConsole.Config
 {
     public class Configuration
     {
+        public static string GetInputPath(string configPath)
+        {
+            var configEntity = GetConfig(configPath);
+
+            return configEntity.InputDir;
+        }
+
+        public static string GetOutputPath(string configPath)
+        {
+            var configEntity = GetConfig(configPath);
+
+            return configEntity.OutputDir;
+        }
+        
         public static IEnumerable<string> GetExcludeNamespaces(string configPath)
+        {
+            var configEntity = GetConfig(configPath);
+
+            return configEntity.ExcludeNamespace;
+        }
+
+        private static ConfigEntity GetConfig(string configPath)
         {
             var jsonString = ReadAllLine(configPath, "utf-8");
 
-            var configEntity =  JsonSerializer.Deserialize<ConfigEntity>(jsonString);
-
-            return configEntity.ExcludeNamespace;
+            return JsonSerializer.Deserialize<ConfigEntity>(jsonString);
         }
 
         private static string ReadAllLine(string filePath, string encodingName)
@@ -29,6 +48,20 @@ namespace JigCSharp.AppConsole.Config
         public class ConfigEntity
         {
             public string Name { get; set; }
+            
+            /// <summary>
+            /// 生成対象のファイルが格納されているディレクトリ
+            /// </summary>
+            public string InputDir { get; set; }
+            
+            /// <summary>
+            /// 結果出力先ディレクトリ
+            /// </summary>
+            public string OutputDir { get; set; }
+            
+            /// <summary>
+            /// 除外対象ネームスペース一覧
+            /// </summary>
             public IEnumerable<string> ExcludeNamespace { get; set; }
         }
     }

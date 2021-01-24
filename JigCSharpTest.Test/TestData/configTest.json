@@ -1,5 +1,7 @@
 ﻿{
   "Name": "test",
+  "InputDir": "input",
+  "OutputDir": "output",
   "ExcludeNamespace" : [
     "aaa",
     "bbb"
