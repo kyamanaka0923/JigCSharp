@@ -30,13 +30,13 @@ namespace JigCSharp.AppConsole
 
             if (!Directory.Exists(path))
             {
-                Console.WriteLine($"指定されたディレクトリが存在しません: {path}");
+                Console.WriteLine($"指定されたディレクトリが存在しません(InputPath): {path}");
                 return;
             }
             
             if (!Directory.Exists(outputDir))
             {
-                Console.WriteLine($"指定されたディレクトリが存在しません: {outputDir}");
+                Console.WriteLine($"指定されたディレクトリが存在しません(OutputPath): {outputDir}");
                 return;
             }
 
