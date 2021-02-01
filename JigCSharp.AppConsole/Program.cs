@@ -57,15 +57,15 @@ namespace JigCSharp.AppConsole
             var plantumlFilePath = outputDir + @"\plantuml.md";
             var excelFilePath = outputDir + @"\jigAll.xlsx";
 
-            // PlantUML形式の結果出力
-            using (var plantumlFileStream = new StreamWriter(plantumlFilePath))
-            {
-                plantumlFileStream.WriteLine(allNamespaceDataList.StringToPlantuml());
-            }
-
             // ネームスペース除外リストから除外
             var excludeNamespaces = Configuration.GetExcludeNamespaces(configFile);
             var targetNamespaceDataList = allNamespaceDataList.Exclude(excludeNamespaces);
+
+            // PlantUML形式の結果出力
+            using (var plantumlFileStream = new StreamWriter(plantumlFilePath))
+            {
+                plantumlFileStream.WriteLine(targetNamespaceDataList.StringToPlantuml());
+            }
 
             // Excel形式の結果出力
             ExcelConverter.Convert(targetNamespaceDataList, excelFilePath);
