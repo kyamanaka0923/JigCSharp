@@ -44,10 +44,22 @@ namespace JigCSharp.Parser.SyntaxData.Type
             var returnStringBuilder = new StringBuilder();
             foreach (var type in displayTypeList)
             {
-                returnStringBuilder.AppendLine($"{fromTypeData.TypeName} --> {type.TypeName}");
+                if (!ContainsPrimitiveTypes(type))
+                {
+                    returnStringBuilder.AppendLine($"{fromTypeData.TypeName} --> {type.TypeName}");
+                }
             }
 
             return returnStringBuilder.ToString();
+        }
+
+        private bool ContainsPrimitiveTypes(TypeData typedata)
+        {
+            var types = new List<string>() {"string", "int", "decimal", "DateTime"};
+
+            var type = typedata.TypeName;
+
+            return types.Contains(type);
         }
     }
 
