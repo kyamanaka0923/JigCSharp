@@ -55,7 +55,7 @@ namespace JigCSharp.Parser.SyntaxData.Type
 
         private bool ContainsPrimitiveTypes(TypeData typedata)
         {
-            var types = new List<string>() {"string", "int", "decimal", "DateTime"};
+            var types = new List<string>() {"string", "int", "decimal", "DateTime", "bool"};
 
             var type = typedata.TypeName;
 
