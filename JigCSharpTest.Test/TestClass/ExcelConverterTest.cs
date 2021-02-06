@@ -9,7 +9,9 @@ namespace JigCSharpTest.Test
     [TestClass]
     public class ExcelConverterTest
     {
-        const string inputDir = @"C:\Repository\DDDSample\DDDSample.DomainModel";
+        //const string inputDir = @"C:\Repository\DDDSample\DDDSample.DomainModel";
+        private const string inputDir = @"C:\Repository\JigCSharp";
+        private const string solutionPath = @"C:\Repository\JigCSharp\JigCSharp.sln";
         [TestMethod]
         public void ConvertTest()
         {
@@ -19,7 +21,7 @@ namespace JigCSharpTest.Test
             foreach (var file in files)
             {
                 using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-                var classParser = new CSharpCodeParser();
+                var classParser = new CSharpCodeParser(solutionPath);
 
                 var namespaceDataList = classParser.Generate(stream);
 

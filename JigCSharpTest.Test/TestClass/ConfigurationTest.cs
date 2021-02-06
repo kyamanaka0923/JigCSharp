@@ -12,7 +12,8 @@ namespace JigCSharpTest.Test
         [TestMethod]
         public void GetExcludeNamespacesTest()
         {
-            var excludedNamespaces = Configuration.GetExcludeNamespaces(configPath);
+            var config = new Configuration(configPath);
+            var excludedNamespaces = config.GetExcludeNamespaces();
 
             excludedNamespaces.Single(x => x == "aaa");
             excludedNamespaces.Single(x => x == "bbb");
@@ -21,7 +22,8 @@ namespace JigCSharpTest.Test
         [TestMethod]
         public void GetInputPuthTest()
         {
-            var inputDir = Configuration.GetInputPath(configPath);
+            var config = new Configuration(configPath);
+            var inputDir = config.GetInputPath();
 
             Assert.AreEqual("input", inputDir);
         }
@@ -29,7 +31,8 @@ namespace JigCSharpTest.Test
         [TestMethod]
         public void GetOutputPathTest()
         {
-            var outputDir = Configuration.GetOutputPath(configPath);
+            var config = new Configuration(configPath);
+            var outputDir = config.GetOutputPath();
             
             Assert.AreEqual("output", outputDir);
         }

@@ -1,0 +1,15 @@
+﻿{
+  "Name": "test",
+  "InputDir": "C:\\Repository\\JigCSharp",
+  "OutputDir": "C:\\Repository\\JigCSharp\\JigCSharp.AppConsole\\result",
+  "SolutionPath" : "C:\\Repository\\JigCSharp\\JigCSharp.sln",
+  "ExcludeNamespace" : [
+    "aaa",
+    "bbb"
+  ],
+  "PlantumlNamespace":[
+    "JigCSharp.Parser.SyntaxData.Class",
+    "JigCSharp.Parser.SyntaxData.Namespace",
+    "JigCSharp.Parser.SyntaxData.Method"
+  ]
+}

@@ -13,6 +13,8 @@ using JigCSharp.Parser.SyntaxData.Method;
 using JigCSharp.Parser.SyntaxData.Namespace;
 using JigCSharp.Parser.SyntaxData.Property;
 using JigCSharp.Parser.SyntaxData.Type;
+using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.MSBuild;
 
 namespace JigCSharp.Parser
 {
@@ -22,6 +24,8 @@ namespace JigCSharp.Parser
     public class CSharpCodeParser : CSharpSyntaxWalker
     {
         private SemanticModel _semanticModel;
+        private Compilation _compilation;
+        private Solution _solution;
         
         private NamespaceDataList _namespaceDataList;
 
@@ -29,19 +33,22 @@ namespace JigCSharp.Parser
         private ClassOrInterfaceData _currentClassOrInterfaceData;
         private MethodData _currentMethodData;
 
-        public CSharpCodeParser()
+        public CSharpCodeParser(string solutionPath)
         {
             _namespaceDataList = new NamespaceDataList();
+            var msWorkspace = MSBuildWorkspace.Create();
+
+            _solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
         }
 
         public NamespaceDataList Generate(Stream stream)
         {
             var tree = CSharpSyntaxTree.ParseText(SourceText.From(stream));
             var mscorlib = MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location);
-            var compilation = CSharpCompilation.Create("tempcompilation", syntaxTrees: new[] {tree}, new []{mscorlib});
-            _semanticModel = compilation.GetSemanticModel(tree);
+            _compilation = CSharpCompilation.Create("tempcompilation", syntaxTrees: new[] {tree}, new []{mscorlib});
+            _semanticModel = _compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
-
+            
             Visit(root);
 
             return _namespaceDataList;
@@ -202,6 +209,10 @@ namespace JigCSharp.Parser
                         break;
                 }
             }
+
+            var methodSymbol = _compilation.GetSymbolsWithName(s => s == node.Identifier.ToString()).FirstOrDefault();
+
+            var result = SymbolFinder.FindReferencesAsync(methodSymbol, _solution).Result;
 
             _currentMethodData = new MethodData(new DeclarationName(node.Identifier.ToString(), ""), keyword, new TypeData(type));
 

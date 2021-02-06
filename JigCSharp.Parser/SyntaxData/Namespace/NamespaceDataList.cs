@@ -38,7 +38,7 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
 
             return new NamespaceDataList(_namespaceDataList);
         }
-
+        
         public NamespaceDataList Exclude(IEnumerable<string> excludeNameList)
         {
             if (!_namespaceDataList.Any())
@@ -55,11 +55,22 @@ namespace JigCSharp.Parser.SyntaxData.Namespace
                 !excludeNameList.Any(y => x.Name.Name.StartsWith(y))));
         }
 
+        /// <summary>
+        /// 対象となるネームスペースを抽出
+        /// </summary>
+        /// <param name="extractNameList"></param>
+        /// <returns></returns>
+        public NamespaceDataList Extract(IEnumerable<string> extractNameList)
+        {
+            return new NamespaceDataList(_namespaceDataList.Where(x =>
+                extractNameList.Any(y => x.Name.Name.StartsWith(y))));
+        }
+
         public IEnumerable<NamespaceData> ToEnumerable()
         {
             return _namespaceDataList.AsEnumerable();
         }
-
+        
         public string StringToPlantuml()
         {
             var returnStringBuilder = new StringBuilder();

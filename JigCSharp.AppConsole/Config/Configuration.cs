@@ -8,28 +8,33 @@ namespace JigCSharp.AppConsole.Config
 {
     public class Configuration
     {
-        public static string GetInputPath(string configPath)
+        private readonly ConfigEntity _configEntity;
+        public Configuration(string configPath)
         {
-            var configEntity = GetConfig(configPath);
+            _configEntity = GetConfig(configPath);
 
-            return configEntity.InputDir;
+        }
+        public string GetInputPath()
+        {
+            return _configEntity.InputDir;
         }
 
-        public static string GetOutputPath(string configPath)
+        public string GetOutputPath()
         {
-            var configEntity = GetConfig(configPath);
-
-            return configEntity.OutputDir;
+            return _configEntity.OutputDir;
         }
         
-        public static IEnumerable<string> GetExcludeNamespaces(string configPath)
+        public IEnumerable<string> GetExcludeNamespaces()
         {
-            var configEntity = GetConfig(configPath);
-
-            return configEntity.ExcludeNamespace;
+            return _configEntity.ExcludeNamespace;
         }
 
-        private static ConfigEntity GetConfig(string configPath)
+        public IEnumerable<string> GetPlantUmlNamespaces()
+        {
+            return _configEntity.PlantumlNamespace;
+        }
+
+        private ConfigEntity GetConfig(string configPath)
         {
             var jsonString = ReadAllLine(configPath, "utf-8");
 
@@ -43,6 +48,11 @@ namespace JigCSharp.AppConsole.Config
             sr.Close();
 
             return allLine;
+        }
+        
+        public string GetSolutionPath()
+        {
+            return _configEntity.SolutionPath;
         }
 
         public class ConfigEntity
@@ -60,9 +70,21 @@ namespace JigCSharp.AppConsole.Config
             public string OutputDir { get; set; }
             
             /// <summary>
+            /// Solutionファイルパス
+            /// </summary>
+            public string SolutionPath { get; set; }
+            
+            /// <summary>
             /// 除外対象ネームスペース一覧
             /// </summary>
             public IEnumerable<string> ExcludeNamespace { get; set; }
+            
+            /// <summary>
+            /// PlantUML対象ネームスペース一覧
+            /// </summary>
+            public IEnumerable<string> PlantumlNamespace { get; set; }
+            
         }
+
     }
 }

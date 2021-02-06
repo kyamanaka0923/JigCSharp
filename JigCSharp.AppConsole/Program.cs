@@ -24,9 +24,12 @@ namespace JigCSharp.AppConsole
             {
                 Console.WriteLine($"指定されたコンフィグファイルが存在ません: {configFile}");
             }
+
+            var configuration = new Configuration(configFile);
             
-            var path = Configuration.GetInputPath(configFile);
-            var outputDir = Configuration.GetOutputPath(configFile);
+            var path = configuration.GetInputPath();
+            var outputDir = configuration.GetOutputPath();
+            string solutionPath = configuration.GetSolutionPath();
 
             if (!Directory.Exists(path))
             {
@@ -42,12 +45,12 @@ namespace JigCSharp.AppConsole
 
             var files = Directory.EnumerateFiles(path, "*.cs", SearchOption.AllDirectories);
 
-            // 全ネームスページ情報を取得
+            // 全ネームスペース情報を取得
             var allNamespaceDataList = new NamespaceDataList();
             foreach (var file in files)
             {
                 using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-                var classParser = new CSharpCodeParser();
+                var classParser = new CSharpCodeParser(solutionPath);
 
                 var namespaceDataList = classParser.Generate(stream);
 
@@ -58,9 +61,7 @@ namespace JigCSharp.AppConsole
             var excelFilePath = outputDir + @"\jigAll.xlsx";
 
             // ネームスペース除外リストから除外
-            var excludeNamespaces = Configuration.GetExcludeNamespaces(configFile);
-            var targetNamespaceDataList = allNamespaceDataList.Exclude(excludeNamespaces);
-
+            var targetNamespaceDataList = allNamespaceDataList.Extract(configuration.GetPlantUmlNamespaces());
             // PlantUML形式の結果出力
             using (var plantumlFileStream = new StreamWriter(plantumlFilePath))
             {

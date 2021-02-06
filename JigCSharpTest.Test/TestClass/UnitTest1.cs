@@ -8,12 +8,13 @@ namespace JigCSharpTest.Test
     [TestClass]
     public class UnitTest1
     {
+        private readonly string solutionPath = @"C:\Repository\DDDSample\DDDSample.sln";
         [TestMethod]
         public void TestMethod1()
         {
             const string inputFileName = @"C:\Repository\DDDSample\DDDSample.DomainModel\Entities\Users.cs";
             using var stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read);
-            var classParser = new CSharpCodeParser();
+            var classParser = new CSharpCodeParser(solutionPath);
 
             var namespaceDataList = classParser.Generate(stream);
 
@@ -27,7 +28,7 @@ namespace JigCSharpTest.Test
         {
             const string inputFileName = @"C:\Repository\DDDSample\DDDSample.DomainModel\Entities\Users.cs";
             using var stream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read);
-            var classParser = new CSharpCodeParser();
+            var classParser = new CSharpCodeParser(solutionPath);
 
             var namespaceDataList = classParser.Generate(stream);
 
