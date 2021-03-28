@@ -4,29 +4,36 @@ using JigCSharp.AppConsole.Config;
 using JigCSharp.AppConsole.Excel;
 using JigCSharp.Parser;
 using JigCSharp.Parser.SyntaxData.Namespace;
+using CommandLine;
 
 namespace JigCSharp.AppConsole
 {
     class Program
     {
+        class Options
+        {
+            [Option('c', "config", Required = true, HelpText = "コンフィグレーションファイル")]
+            public string ConfigurationFile { get; set; }
+        }
+
         static void Main(string[] args)
         {
-            
-            if (args.Length != 1)
-            {
-                Console.WriteLine("Usage: JigCSharp.exe [ConfigFile]");
-                return;
-            }
-            
-            var configFile = args[0];
-            
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(ParseSolution)
+                .WithNotParsed(er => { });
+        }
+
+        private static void ParseSolution(Options opt)
+        {
+            var configFile = opt.ConfigurationFile;
+
             if (!File.Exists(configFile))
             {
                 Console.WriteLine($"指定されたコンフィグファイルが存在ません: {configFile}");
             }
 
             var configuration = new Configuration(configFile);
-            
+
             var path = configuration.GetInputPath();
             var outputDir = configuration.GetOutputPath();
             string solutionPath = configuration.GetSolutionPath();
@@ -36,7 +43,7 @@ namespace JigCSharp.AppConsole
                 Console.WriteLine($"指定されたディレクトリが存在しません(InputPath): {path}");
                 return;
             }
-            
+
             if (!Directory.Exists(outputDir))
             {
                 Console.WriteLine($"指定されたディレクトリが存在しません(OutputPath): {outputDir}");
