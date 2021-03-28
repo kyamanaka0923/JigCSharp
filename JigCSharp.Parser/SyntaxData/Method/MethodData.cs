@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using JigCSharp.Parser.SyntaxData.Common;
 using JigCSharp.Parser.SyntaxData.Type;
 
@@ -11,12 +13,15 @@ namespace JigCSharp.Parser.SyntaxData.Method
         public TypeData ReturnTypeData { get; }
 
         public string Modifier { get; }
+        
+        public List<XmlDocument.ParamComment> _ParamCommentList { get; }
 
-        public MethodData(DeclarationName name, string modifier, TypeData returnTypeData)
+        public MethodData(DeclarationName name, string modifier, TypeData returnTypeData, IEnumerable<XmlDocument.ParamComment> paramComments)
         {
             Name = name;
             Modifier = modifier;
             ReturnTypeData = returnTypeData;
+            _ParamCommentList = new List<XmlDocument.ParamComment>(paramComments);
         }
 
         public void DisplayPlantuml()
@@ -26,7 +31,16 @@ namespace JigCSharp.Parser.SyntaxData.Method
 
         public string DisplayList()
         {
-            return $"### メソッド : {Name.Name} ({Name.DisplayName})\n#### 戻り値 : {ReturnTypeData.TypeName}";
+            var returnStringBuilder = new StringBuilder();
+            returnStringBuilder.AppendLine($"### メソッド : {Name.Name} ({Name.DisplayName})");
+            returnStringBuilder.AppendLine($"#### 戻り値 : {ReturnTypeData.TypeName}");
+            returnStringBuilder.AppendLine($"### 引数");
+            foreach (var param in _ParamCommentList)
+            {
+                returnStringBuilder.AppendLine($"{param.Name}:{param.AliasName}");
+            }
+
+            return returnStringBuilder.ToString();
         }
 
         /// <summary>

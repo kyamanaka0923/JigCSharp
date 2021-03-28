@@ -212,9 +212,11 @@ namespace JigCSharp.Parser
 
             var methodSymbol = _compilation.GetSymbolsWithName(s => s == node.Identifier.ToString()).FirstOrDefault();
 
+            var comment = GetComment(node);
+
             var result = SymbolFinder.FindReferencesAsync(methodSymbol, _solution).Result;
 
-            _currentMethodData = new MethodData(new DeclarationName(node.Identifier.ToString(), ""), keyword, new TypeData(type));
+            _currentMethodData = new MethodData(new DeclarationName(node.Identifier.ToString(), ""), keyword, new TypeData(type), comment.ParamCommentList);
 
             base.VisitMethodDeclaration(node);
 
